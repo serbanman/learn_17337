@@ -17,13 +17,13 @@ class Video(models.Model):
     id = models.UUIDField(default=uuid4, editable=False, unique=True, primary_key=True)
     r_id = models.CharField(default=get_r_id, unique=True, max_length=10)
     title = models.CharField(max_length=255, null=True, blank=True)
-    description = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(default=now)
 
     total_views = models.IntegerField(default=0)
     unique_views = models.IntegerField(default=0)
 
-    category = models.CharField(max_length=255, null=True, blank=True)  # id representation of category
+    category = models.IntegerField(null=True, blank=True)  # id representation of category
     tags = models.JSONField(default=list, null=False, blank=False)  # list of tags id
 
     objects = VideoShardQuerySet.as_manager()
