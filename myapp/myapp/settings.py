@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_elasticsearch_dsl',
     'rest_framework',
     'content',
     'users',
+    'silk',
 ]
 
 MIDDLEWARE = [
@@ -50,7 +52,25 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "silk.middleware.SilkyMiddleware",
 ]
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'elasticsearch'
+    },
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://redis:6379/',
+        'TIMEOUT': 60 * 60,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
 
 ROOT_URLCONF = 'myapp.urls'
 
@@ -71,12 +91,20 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'myapp.wsgi.application'
+CELERY_BROKER_URL = 'amqp://user:password@rabbitmq:5672//'
 
+SILKY_META = True
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASE_VIDEO_DRIVE_KEY = 'video_shard_%d'
+DATABASE_VIDEO_SHARDS_QUANTITY = 5
+
 DATABASE_HISTORY_DRIVE_KEY = 'history_shard_%d'
+DATABASE_HISTORY_SHARDS_QUANTITY = 3
+
 DATABASE_ROUTERS = ['myapp.dbrouters.CustomRouter']
 DATABASES = {
     'default': {

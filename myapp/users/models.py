@@ -14,11 +14,11 @@ class History(models.Model):
 
     def parse_video_id(self):
         category_id, video_id = self.video_id.split('__')
-        return category_id, video_id
+        return int(category_id), video_id
 
     def get_category_and_video(self):
         category_id, video_id = self.parse_video_id()
         category = Category.objects.get(id=category_id)
         video = Video.objects.get(shard_id=category_id, id=video_id)
-
         return category, video
+

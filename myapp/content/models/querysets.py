@@ -59,3 +59,6 @@ class VideoShardQuerySet(ShardQuerySet):
 class HistoryShardQuerySet(ShardQuerySet):
     def get_db(self, user_id):
         return settings.DATABASE_HISTORY_DRIVE_KEY % (user_id % 3 + 1)
+
+    # def get_videos_by_user(self, user_id, category_id):
+    #     return self.chain_shard(shard_id=user_id).filter(video_id__startswith=f'{category_id}__')
