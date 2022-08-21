@@ -12,6 +12,6 @@ def process_view(user_id, video_id, category_id):
 @shared_task
 def calculate_recommendations(user_id):
     service = RecommendationsService(user_id)
-    result = service.process()
+    service.process()
     print(f'>> FROM task, user_id: {user_id}, type: {type(user_id)}')
-    cache.set(user_id, result)
+    cache.set(user_id, service.result)

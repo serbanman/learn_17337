@@ -15,7 +15,7 @@ class Command(BaseCommand):
             ["Айти", "Языки", "Рукоделие", "Личностный рост", "Школа", "Математика"]
         ]
         r = RandomWords()
-
+        random_words = r.get_random_words()
         for ind, category in enumerate(category_names):
             print('Creating Category')
             category_obj = Category.objects.create(name=category)
@@ -30,13 +30,13 @@ class Command(BaseCommand):
 
             for i in range(1, 11):
                 print('Creating video')
-                random_words = r.get_random_words()
+                # random_words = r.get_random_words()
                 if isinstance(random_words, list):
                     video_tags = random.sample(category_tags, random.randint(1, 3))
                     obj = Video.objects.create(
                         shard_id=category_obj.id,
                         title=' '.join(list(tag.name for tag in video_tags)) + f' No.{i}',
-                        description=' '.join(random_words),
+                        description=' '.join(random.sample(random_words, random.randint(2, 5))),
                         category=category_obj.id,
                         tags=list(tag.id for tag in video_tags)
                     )

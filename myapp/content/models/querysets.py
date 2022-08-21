@@ -5,6 +5,9 @@ from django.conf import settings
 class ShardQuerySet(QuerySet):
     use_for_related_fields = True
 
+    def get_db(self, shard_id):
+        raise NotImplementedError
+
     def chain_shard(self, shard_id):
         if shard_id is not None:
             db = self.get_db(shard_id)

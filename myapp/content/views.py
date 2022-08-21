@@ -26,6 +26,7 @@ class VideoCustomViewSet(generics.GenericAPIView):
 
 
 def mixin_shard_call(func):
+    """ Basically it is a get_or_404 function, but for custom get_object method """
     def wrapper(*args, **kwargs):
         try:
             res = func(*args, **kwargs)
@@ -121,8 +122,6 @@ class VideoRecommendedViewSet(generics.GenericAPIView, mixins.ListModelMixin):
 
     @silk_profile(name='Recommendations GET')
     def get(self, request, *args, **kwargs):
-        service = RecommendationsService(self.request.user.id)
-        service.process()
         return self.list(request, *args, **kwargs)
 
 

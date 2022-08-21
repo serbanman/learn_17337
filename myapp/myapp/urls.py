@@ -7,34 +7,14 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 
-description = '''TEST API
-
-Validation errors format:
-<pre>
-{
-  "field_0": [
-    "error_0",
-    "error_1",
-    ...
-    "error_n"
-  ],
-  ...
-  "field_n": [
-    "error_0",
-    "error_1",
-    ...
-    "error_n"
-  ]
-}
-</pre>'''
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='Joxi API',
-        default_version='v2',
-        description=description,
+        title='TEST API',
+        default_version='v1',
+        description='test description',
     ),
-    public=False,
+    public=True,
     permission_classes=(permissions.AllowAny,),
     authentication_classes=(authentication.SessionAuthentication,)
 )
