@@ -6,6 +6,10 @@ import math
 from django.conf import settings
 
 
+def generate_rec_cache_key(user_id):
+    return f"{user_id}__recommendations"
+
+
 class HistoryService:
     def __init__(self, user_id):
         self.user_id = user_id

@@ -6,7 +6,7 @@ from content.models import Video, Tag, Category
 from django.http import HttpResponse
 
 from content.tasks import process_view, calculate_recommendations
-from content.utils import RecommendationsService
+from content.utils import RecommendationsService, generate_rec_cache_key
 from content.es_search import es_search
 from django.core.cache import cache
 from silk.profiling.profiler import silk_profile
@@ -109,15 +109,16 @@ class VideoRecommendedViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Video.objects.none()
 
     def get_queryset(self):
-        print(f'Cache is: {cache.get(self.request.user.id)}')
-        cached = cache.get(self.request.user.id)
+        cache_key = generate_rec_cache_key(user_id=self.request.user.id)
+        cached = cache.get(cache_key)
+        print(f'Cache is: {cached}')
         if cached:
             print('Got from cache')
             return cached
         else:
             service = RecommendationsService(self.request.user.id)
             service.process()
-            cache.set(self.request.user.id, service.result)
+            cache.set(cache_key, service.result)
             return service.result
 
     @silk_profile(name='Recommendations GET')

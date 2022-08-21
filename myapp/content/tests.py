@@ -7,7 +7,7 @@ from content.models import Video
 from django.core.cache import cache
 from unittest.mock import Mock, patch
 from django.conf import settings
-from content.utils import RecommendationsService
+from content.utils import RecommendationsService, generate_rec_cache_key
 
 from users.models import History
 
@@ -37,10 +37,12 @@ class RecommendationsTests(APITestCase):
         self.client.force_login(self.user)
 
     def tearDown(self) -> None:
-        cache.set(self.user.id, [])
+        cache_key = generate_rec_cache_key(self.user.id)
+        cache.set(cache_key, [])
 
     def test_cache_empty(self):
-        cached_recs = cache.get(self.user.id)
+        cache_key = generate_rec_cache_key(self.user.id)
+        cached_recs = cache.get(cache_key)
         self.assertFalse(cached_recs)
         print(f'>> test_cache_empty >> OK')
 
@@ -67,7 +69,8 @@ class RecommendationsTests(APITestCase):
     def test_cache_exists(self):
         rec_url = reverse('video_recommended')
         self.client.get(rec_url)
-        cached_recs = cache.get(self.user.id)
+        cache_key = generate_rec_cache_key(self.user.id)
+        cached_recs = cache.get(cache_key)
         self.assertTrue(bool(cached_recs))
         print(f'>> test_cache_exists >> OK')
 
@@ -92,7 +95,8 @@ class RecommendationsTests(APITestCase):
             user_id=self.user.id,
             video_id=f'{video_to_watch["category"]}__{video_to_watch["id"]}'
         )
-        cache.set(self.user.id, [])
+        cache_key = generate_rec_cache_key(self.user.id)
+        cache.set(cache_key, [])
         second_resp = self.client.get(rec_url)
         second_data = second_resp.data
 
@@ -116,7 +120,8 @@ class RecommendationsTests(APITestCase):
             )
             watched_ids.append(el["r_id"])
 
-        cache.set(self.user.id, [])
+        cache_key = generate_rec_cache_key(self.user.id)
+        cache.set(cache_key, [])
         second_resp = self.client.get(rec_url)
         second_data = second_resp.data
 
