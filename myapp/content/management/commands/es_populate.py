@@ -11,3 +11,4 @@ class Command(BaseCommand):
         for i in range(1, shards + 1):
             qs = Video.objects.chain_shard(i).all()
             VideoDocument().update(qs)
+            print(f'> Updating on {qs}')

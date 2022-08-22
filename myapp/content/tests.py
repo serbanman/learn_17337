@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
+
 from content.management.commands.create_content import Command as create_content
 from content.models import Video
 from django.core.cache import cache
@@ -31,6 +32,13 @@ class RecommendationsTests(APITestCase):
         print(f'>>>>QS: {qs}')
         if not qs.exists():
             create_content().handle()
+
+    @classmethod
+    def tearDownClass(cls):
+        """ without this all the test data still exists in the es index """
+        for i in range(1, settings.DATABASE_VIDEO_SHARDS_QUANTITY + 1):
+            qs = Video.objects.chain_shard(i).all()
+            qs.delete()
 
     def setUp(self) -> None:
         self.user, _ = User.objects.get_or_create(username='test', password='test')

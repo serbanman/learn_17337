@@ -5,9 +5,19 @@ from django.conf import settings
 
 def es_search(title: str, description: str) -> list:
     result = []
-
-    q1 = Q('multi_match', query=title, fields=['title'])
-    q2 = Q('multi_match', query=description, fields=['description'])
+    print(f'> Title: {title}, descr: {description}')
+    q1 = Q(
+        'multi_match',
+        query=title,
+        fields=['title'],
+        fuzziness='auto',
+    )
+    q2 = Q(
+        'multi_match',
+        query=description,
+        fields=['description'],
+        fuzziness='auto',
+    )
 
     for i in range(1, settings.DATABASE_VIDEO_SHARDS_QUANTITY + 1):
         search = VideoDocument.search(db=settings.DATABASE_VIDEO_DRIVE_KEY % i)
