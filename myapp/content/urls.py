@@ -2,7 +2,7 @@ from django.urls import path, re_path
 from django.conf import settings
 
 from content.views import VideoListViewSet, TagsListViewSet, CategoryListViewSet, VideoViewSet, \
-    VideoCreateViewSet, VideoWatchViewSet, VideoRecommendedViewSet, VideoSearchViewSet
+    VideoCreateViewSet, VideoWatchViewSet, VideoRecommendedViewSet, VideoSearchViewSet, RedirectViewSet
 
 video_shards = f'[1-{settings.DATABASE_VIDEO_SHARDS_QUANTITY}]'
 
@@ -18,5 +18,6 @@ urlpatterns = [
     path('videos/create/', VideoCreateViewSet.as_view(), name='video_create'),
     path('videos/search/', VideoSearchViewSet.as_view(), name='video_search'),
     path('categories/', CategoryListViewSet.as_view(), name='categories'),
-    path('tags/', TagsListViewSet.as_view(), name='tags')
+    path('tags/', TagsListViewSet.as_view(), name='tags'),
+    path('test/', RedirectViewSet.as_view(), name='tags'),
 ]

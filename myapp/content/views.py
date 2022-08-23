@@ -1,4 +1,5 @@
 from rest_framework import mixins, permissions, generics
+from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from content.serializers import VideoSerializer, TagSerializer, CategorySerializer
@@ -10,6 +11,10 @@ from content.utils import RecommendationsService, generate_rec_cache_key
 from content.es_search import es_search
 from django.core.cache import cache
 from silk.profiling.profiler import silk_profile
+
+from django.conf import settings
+import aiohttp
+from asgiref.sync import async_to_sync
 
 
 class VideoCustomViewSet(generics.GenericAPIView):
@@ -173,3 +178,15 @@ class CategoryListViewSet(generics.GenericAPIView, mixins.ListModelMixin):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+class RedirectViewSet(APIView):
+
+    @async_to_sync
+    async def get(self, request, format=None):
+        user_id = request.user.id
+        async with aiohttp.ClientSession() as session:
+            async with session.get(settings.FASTAPI_PATH + str(user_id)) as response:
+                result = await response.json()
+        return Response(result)
+

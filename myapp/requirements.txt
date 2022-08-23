@@ -35,3 +35,4 @@ django-silk==5.0.1
 django-redis==5.2.0
 elasticsearch-dsl==7.4.0
 django-elasticsearch-dsl==7.2.2
+aiohttp==3.8.1

@@ -98,6 +98,8 @@ SILKY_META = True
 SILKY_PYTHON_PROFILER = True
 SILKY_PYTHON_PROFILER_BINARY = True
 
+FASTAPI_PATH = 'http://fastapi/'
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASE_VIDEO_DRIVE_KEY = 'video_shard_%d'

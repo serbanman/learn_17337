@@ -26,23 +26,6 @@ services:
       - db
     volumes:
     - esdata:/usr/share/elasticsearch/data
-#  elasticsearch:
-#    container_name: es
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.1
-#    environment:
-#      - cluster.name=joxi-cluster-elasticsearch
-#      - transport.host=localhost
-#      - cluster.name=docker-cluster
-#      - bootstrap.memory_lock=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    depends_on:
-#      - db
-#    volumes:
-#      - esdata:/usr/share/elasticsearch/data
 
   rabbitmq:
     container_name: rammitmq
@@ -56,7 +39,7 @@ services:
 
   django:
     container_name: django
-    build: .
+    build: ./myapp/
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./myapp:/app
@@ -68,13 +51,13 @@ services:
       - redis
     links:
       - db
-#      - elasticsearch
+      - elasticsearch
       - rabbitmq
       - redis
 
   celery:
     container_name: celery
-    build: .
+    build: ./myapp/
     command: celery -A myapp worker -l info
     volumes:
       - ./myapp:/app
@@ -85,7 +68,7 @@ services:
       - redis
     links:
       - db
-#      - elasticsearch
+      - elasticsearch
       - rabbitmq
       - redis
 
@@ -94,6 +77,23 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
+
+  fastapi:
+    container_name: fastapi
+    build: ./fastapi/
+    volumes:
+      - ./fastapi:/app
+    ports:
+      - 8001:80
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+    links:
+      - db
+      - elasticsearch
+      - rabbitmq
+      - redis
 
 volumes:
   postgresdata:
