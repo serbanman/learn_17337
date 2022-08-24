@@ -116,7 +116,6 @@ class VideoRecommendedViewSet(generics.GenericAPIView, mixins.ListModelMixin):
     def get_queryset(self):
         cache_key = generate_rec_cache_key(user_id=self.request.user.id)
         cached = cache.get(cache_key)
-        print(f'Cache is: {cached}')
         if cached:
             print('Got from cache')
             return cached
@@ -180,13 +179,22 @@ class CategoryListViewSet(generics.GenericAPIView, mixins.ListModelMixin):
         return self.list(request, *args, **kwargs)
 
 
-class RedirectViewSet(APIView):
-
+class TestViewSet(APIView):
+    """ Fetching recommendations from separate FastApi server """
     @async_to_sync
     async def get(self, request, format=None):
         user_id = request.user.id
-        async with aiohttp.ClientSession() as session:
-            async with session.get(settings.FASTAPI_PATH + str(user_id)) as response:
-                result = await response.json()
-        return Response(result)
+        cache_key = generate_rec_cache_key(user_id=user_id)
+        cached = cache.get(cache_key)
+        print(f'Cache is: {cached}')
+        if cached:
+            print('Got from cache')
+            serializer = VideoSerializer
+            return Response(serializer(cached, many=True).data)
+        else:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(settings.FASTAPI_PATH + str(user_id)) as response:
+                    result = await response.json()
+                    cache.set(cache_key, result)
+                    return Response(result)
 

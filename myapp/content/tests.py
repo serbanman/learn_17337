@@ -1,3 +1,4 @@
+import aiohttp
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
@@ -43,6 +44,8 @@ class RecommendationsTests(APITestCase):
     def setUp(self) -> None:
         self.user, _ = User.objects.get_or_create(username='test', password='test')
         self.client.force_login(self.user)
+        cache_key = generate_rec_cache_key(self.user.id)
+        cache.set(cache_key, [])
 
     def tearDown(self) -> None:
         cache_key = generate_rec_cache_key(self.user.id)
@@ -86,7 +89,7 @@ class RecommendationsTests(APITestCase):
         rec_url = reverse('video_recommended')
         self.client.get(rec_url)
 
-        with patch.object(RecommendationsService, 'process') as mock_obj:
+        with patch.object(aiohttp.ClientSession, 'get') as mock_obj:
             self.client.get(rec_url)
 
         mock_obj.assert_not_called()

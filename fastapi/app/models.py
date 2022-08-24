@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DATETIME, JSON
-from database import Base
+from sqlalchemy import Column, Integer, String, ForeignKey, DATETIME
+from sqlalchemy.dialects.postgresql import JSONB
+from .database import Base
 
 
 class Category(Base):
@@ -13,7 +14,7 @@ class Tag(Base):
     __tablename__ = "content_tag"
 
     id = Column(Integer, primary_key=True, index=True)
-    category = Column(Integer, ForeignKey("content_category.id"))
+    category_id = Column(Integer, ForeignKey("content_category.id"))
 
 
 class Video(Base):
@@ -27,7 +28,7 @@ class Video(Base):
     total_views = Column(Integer)
     unique_views = Column(Integer)
     category = Column(Integer)
-    tags = Column(JSON)
+    tags = Column(JSONB)
 
 
 class History(Base):

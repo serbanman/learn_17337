@@ -1,0 +1,5 @@
+VIDEO_SHARDS_QUANTITY = 5
+HISTORY_SHARDS_QUANTITY = 3
+
+VIDEO_SHARD_KEY = 'video_shard_%d'
+HISTORY_SHARD_KEY = 'history_shard_%d'

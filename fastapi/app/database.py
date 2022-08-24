@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from config import VIDEO_SHARDS_QUANTITY, HISTORY_SHARDS_QUANTITY, VIDEO_SHARD_KEY, HISTORY_SHARD_KEY
+from .config import VIDEO_SHARDS_QUANTITY, HISTORY_SHARDS_QUANTITY, VIDEO_SHARD_KEY, HISTORY_SHARD_KEY
 
 sessions = {}
 SQLALCHEMY_DEFAULT_DATABASE_URL = "postgresql://user:password@db:5432/default_db"
