@@ -1,4 +1,4 @@
 .idea/
 venv/
 *.prof
-fastapi/__pycache__/
+fastapi/app/__pycache__/
